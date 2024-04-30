@@ -31,4 +31,5 @@ vsearch --cluster_fast $indir/cluster_input.oriented.fasta --threads 16  --id 1 
 mafft --auto $indir/cluster_input.oriented.fasta > $indir/alignment/amplicons.mafft.aln
 # TODO: switch for infernal?
 
-#FastTree -gtr -nt $indir/alignment/amplicons.mafft.aln > $indir/alignment/amplicons.mafft.aln.nwk
+# the sed prevents errors where fasttree only takes the sequence id prior to the :, leading to duplicates
+cat $indir/alignment/amplicons.mafft.aln | sed "s|:|-|g" | FastTree -gtr -nt  > $indir/alignment/amplicons.mafft.aln.nwk
