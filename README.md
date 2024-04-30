@@ -8,9 +8,23 @@
 
 ## Usage:
 
+Download the desired genus's genomes and run primer search:
 
-### Step 1: Acquire reference genomes for the genus of interest
+```
+bash run.sh Enterococcus AYTGGGYDTAAAGNG CCGTCAATTYHTTTRAGT
+```
 
+Then run the clustering and tree building
 
+```
+bash cluster.sh sytycs_Enterococcus-AYTGGGYDTAAAGNG-CCGTCAATTYHTTTRAGT
+```
 
-### 
+## V1 Goals:
+
+- add some ANI-based approach to pre-screen for poor homology that would ruin alignments
+- Swap primersearch for bbmap  msa + bbmap extract
+- implement ability to run on higher taxonomic ranks
+- implement subsets
+- switch to infernal for alignment
+- arg to provide outgroup

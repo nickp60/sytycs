@@ -20,14 +20,14 @@ cat prokaryotes.txt | awk -F "\t"  '{if ($16 == "Complete Genome")  { print }}' 
 echo "      ------   found $(wc -l tmp.queryhits.tsv) hits for $query ------- "
 echo "      ------   downloading  genomes ------- "
 cat $outdir/tmp.queryhits.tsv | cut -f21 | while read urlpre; do
-    url=${urlpre}_genomic.fna.gz 
+    url=${urlpre}_genomic.fna.gz
     base=$(basename $url)
     target="$SYTYCS_CACHEDIR/$base"
     if [ ! -f "$target" ]
     then
 	# try to download it, but in cases like GCF_002278015.2_ASM227801v2 there may be multiple versions organised as subdirectories
 	assemblybase=$(basename ${urlpre})
-        alturl=${urlpre}/${assemblybase}_genomic.fna.gz 
+        alturl=${urlpre}/${assemblybase}_genomic.fna.gz
       wget   $url -O $target || wget $alturl -O $target
     else
 	echo "                  ---  already have $target      "
@@ -38,13 +38,13 @@ done
 ## create the primersearch input file:
 echo -e "query\t$primerf\t$primerr" > $outdir/primers.txt
 if [ -f "${outdir}pcr/tmp.primersearch" ]
-then 
+then
 rm ${outdir}pcr/tmp.primersearch
 fi
 
 echo "      ------   running primersearch on  genomes ------- "
 cat $outdir/manifest.txt | while read infile
-do 
+do
     if [ -s "$infile" ]
     then
 	outfile=${outdir}pcr/$(basename $infile).fasta
@@ -55,18 +55,19 @@ do
     primersearch -infile $outdir/primers.txt -seqall tmp.embl -outfile ${outfile}.ps -mismatchpercent 5
     awk '{$1=$1;print}' ${outfile}.ps | tail -n+3 | sed "s|.* strand at ||g" | tr "\n" "\t"  | \
         awk 'BEGIN{RS="bp"}{print}' | sed "s|^\t||g" | sed "s|Amplimer length: ||g" | sed "s|with . mismatches||g" > ${outfile}.hits
-    #this filters for hits shorter than 400, trims off brackets and extra whitespace, extracts the forward and reverse coords, separates them with .., 
-    # and turns new lines to commas to make a comma-separated list 
-    # the reverse coords are, inconveniently, relative to the reverse strand :( 
+
+    #this filters for hits shorter than 400, trims off brackets and extra whitespace, extracts the forward and reverse coords, separates them with ..,
+    # and turns new lines to commas to make a comma-separated list
+    # the reverse coords are, inconveniently, relative to the reverse strand :(
     # I wish I was joking...
 #    coord_string=$(cat ${outfile}.hits | awk -F "\t" '{if ($6 <= 400) {print}}'  | grep Sequence |  tr -d "]" | tr -d "["  | cut -f 4,5 | sed "s|\t|..|g" | tr -d " " | tr "\n" ",")
 #    coord_string=$(cat ${outfile}.hits | awk -F "\t" '{if ($6 <= 400) {print}}'  | grep Sequence |  awk 'BEGIN{FS=OFS="\t"} {print $4, $6+$4}'  | sed "s|\t|..|g" | tr -d " " | tr "\n" ",")
 #    extractseq tmp.embl -reg "$coord_string" stdout -separate  > $outfile
+
     ./primersearch_to_fasta.py $infile  ${outfile}.hits >  ${outfile}
     rm tmp.embl
     else
 echo "$infile doesn't exist or is empty"
 fi
 
-done  
-
+done
