@@ -1,4 +1,4 @@
-# So you think you can (trust your) species (annotations)?
+# So you think you can (trust your) species (amplicons)?
 
 # Prereqs
 
