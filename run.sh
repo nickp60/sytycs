@@ -58,11 +58,11 @@ do
     #this filters for hits shorter than 400, trims off brackets and extra whitespace, extracts the forward and reverse coords, separates them with .., 
     # and turns new lines to commas to make a comma-separated list 
     # the reverse coords are, inconveniently, relative to the reverse strand :( 
-    # so the best way of getting the start/stop coordinates are to add the length to the start coordinate.
     # I wish I was joking...
 #    coord_string=$(cat ${outfile}.hits | awk -F "\t" '{if ($6 <= 400) {print}}'  | grep Sequence |  tr -d "]" | tr -d "["  | cut -f 4,5 | sed "s|\t|..|g" | tr -d " " | tr "\n" ",")
-    coord_string=$(cat ${outfile}.hits | awk -F "\t" '{if ($6 <= 400) {print}}'  | grep Sequence |  awk 'BEGIN{FS=OFS="\t"} {print $4, $6+$4}'  | sed "s|\t|..|g" | tr -d " " | tr "\n" ",")
-    extractseq tmp.embl -reg "$coord_string" stdout -separate  > $outfile
+#    coord_string=$(cat ${outfile}.hits | awk -F "\t" '{if ($6 <= 400) {print}}'  | grep Sequence |  awk 'BEGIN{FS=OFS="\t"} {print $4, $6+$4}'  | sed "s|\t|..|g" | tr -d " " | tr "\n" ",")
+#    extractseq tmp.embl -reg "$coord_string" stdout -separate  > $outfile
+    ./primersearch_to_fasta.py $infile  ${outfile}.hits >  ${outfile}
     rm tmp.embl
     else
 echo "$infile doesn't exist or is empty"
