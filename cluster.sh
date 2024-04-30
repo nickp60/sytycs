@@ -28,9 +28,13 @@ vsearch -orient $indir/cluster_input.fasta -db ${SYTYCS_CACHEDIR}/gold.fasta -fa
 
 vsearch --cluster_fast $indir/cluster_input.oriented.fasta --threads 16  --id 1 --strand both  -uc $indir/clusters.uc
 
-# add in E. coli to root this
-echo -n ">E. coli\nACTGGGCGTAAAGCGCACGCAGGCGGTTTGTTAAGTCAGATGTGAAATCCCCGGGCTCAACCTGGGAACTGCATCTGATACTGGCAAGCTTGAGTCTCGTAGAGGGGGGTAGAATTCCAGGTGTAGCGGTGAAATGCGTAGAGATCTGGAGGAATACCGGTGGCGAAGGCGGCCCCCTGGACGAAGACTGACGCTCAGGTGCGAAAGCGTGGGGAGCAAACAGGATTAGATACCCTGGTAGTCCACGCCGTAAACGATGTCGACTTGGAGGTTGTGCCCTTGAGGCGTGGCTTCCGGAGCTAACGCGTTAAGTCGACCGCCTGGGGAGTACGGCCGCAAGGTTAAAACTCAAATGAATTGACGG" >>  $indir/cluster_input.oriented.fasta
-mafft --auto $indir/cluster_input.oriented.fasta > $indir/alignment/amplicons.mafft.aln
 # TODO: switch for infernal?
 # the sed prevents errors where fasttree only takes the sequence id prior to the :, leading to duplicates
 cat $indir/alignment/amplicons.mafft.aln | sed "s|:|-|g" | FastTree -gtr -nt  > $indir/alignment/amplicons.mafft.aln.nwk
+
+
+# add in E. coli to root this
+echo -n ">E. coli\nACTGGGCGTAAAGCGCACGCAGGCGGTTTGTTAAGTCAGATGTGAAATCCCCGGGCTCAACCTGGGAACTGCATCTGATACTGGCAAGCTTGAGTCTCGTAGAGGGGGGTAGAATTCCAGGTGTAGCGGTGAAATGCGTAGAGATCTGGAGGAATACCGGTGGCGAAGGCGGCCCCCTGGACGAAGACTGACGCTCAGGTGCGAAAGCGTGGGGAGCAAACAGGATTAGATACCCTGGTAGTCCACGCCGTAAACGATGTCGACTTGGAGGTTGTGCCCTTGAGGCGTGGCTTCCGGAGCTAACGCGTTAAGTCGACCGCCTGGGGAGTACGGCCGCAAGGTTAAAACTCAAATGAATTGACGG" >>  $indir/cluster_input.oriented.fasta
+mafft --auto $indir/cluster_input.oriented.fasta > $indir/alignment/amplicons.rooted.mafft.aln
+# the sed prevents errors where fasttree only takes the sequence id prior to the :, leading to duplicates
+cat $indir/alignment/amplicons.rooted.mafft.aln | sed "s|:|-|g" | FastTree -gtr -nt  > $indir/alignment/amplicons.rooted.mafft.aln.nwk
