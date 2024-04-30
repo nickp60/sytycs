@@ -28770,7 +28770,7 @@ cagctaa--cgcattaagcact----ccgcct-ggggagtacga-ccgcaaggttgaaac
 tcaaaggaattgacg
 >NZ_AP026666.1:1852917-1853279-RC--Enterococcus--faecium--strain--GK961--chromosome,--complete--genome
 ------------------------------------ttgggcgtaaagcgagcgc-----
--aggcggtcatcagaaggggataacacttg----------gaaacagg-----------t
+-aggcggtcatcagaaggggataacacttgg----------aaacagg-----------t
 gctaata-cc-----gtataacaat-----------------------------------
 ------aactgggagacttgagtgcagaagaggag--agtggaattc----catgtgtag
 c-ggtgaaatgcgtagatatatgga-ggaacaccagtggcgaaggcggctctct-ggtct
@@ -35138,3 +35138,13 @@ gtaactgacgctgaggct-cgaaagcgt-ggggagc-aaacaggattagataccctggta
 gtccacgccgtaaacgatgagtgctaagtgttggagggtttccgcccttcagtgct---g
 cagcaaa--cgcattaagcact----ccgcct-ggggagtacga-ccgcaaggttgaaac
 tcaaaggaattgacg
+>E. coli\nACTGGGCGTAAAGCGCACGCAGGCGGTTTGTTAAGTCAGATGTGAAATCCCCGGGCTCAACCTGGGAACTGCATCTGATACTGGCAAGCTTGAGTCTCGTAGAGGGGGGTAGAATTCCAGGTGTAGCGGTGAAATGCGTAGAGATCTGGAGGAATACCGGTGGCGAAGGCGGCCCCCTGGACGAAGACTGACGCTCAGGTGCGAAAGCGTGGGGAGCAAACAGGATTAGATACCCTGGTAGTCCA
+------------------------------------------------------------
+------------------------------------------------------------
+------------------------------------------------------------
+------------------------------------------------------------
+------------------------------------------------------------
+------------------------------------------------------------
+------------------------------------------------------------
+------------------------------------------------------------
+---------------
