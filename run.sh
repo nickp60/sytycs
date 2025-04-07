@@ -1,6 +1,9 @@
 set -eux
 set -o pipefail
-# wget https://ftp.ncbi.nlm.nih.gov/genomes/GENOME_REPORTS/prokaryotes.txt
+if [ ! -f prokaryotes.txt]; then
+    wget https://ftp.ncbi.nlm.nih.gov/genomes/GENOME_REPORTS/prokaryotes.txt
+fi
+
 ## subset to "Complete Genome" for now.  Could include Chromosome? defined as https://www.ncbi.nlm.nih.gov/datasets/docs/v2/glossary/
 ## Chromosome—There is a sequence for one or more chromosomes. This may be a completely sequenced chromosome without gaps or a chromosome containing scaffolds or contigs with gaps between them. There may also be unplaced or unlocalized scaffolds.
 ## Complete genome—All chromosomes are gapless and contain runs of nine or less ambiguous bases (Ns), there are no unplaced or unlocalized scaffolds, and all the expected chromosomes are present (i.e., the assembly is not noted as having partial genome representation). Plasmids and organelles may or may not be included in the assembly, but if they are present, the sequences are gapless.
