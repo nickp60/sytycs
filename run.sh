@@ -1,6 +1,6 @@
 set -eux
 set -o pipefail
-if [ ! -f prokaryotes.txt]; then
+if [ ! -f prokaryotes.txt ]; then
     wget https://ftp.ncbi.nlm.nih.gov/genomes/GENOME_REPORTS/prokaryotes.txt
 fi
 
