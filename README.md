@@ -3,7 +3,7 @@
 # Prereqs
 
 - clone this repo
-- set environment variable SYTYCS_CACHEDIR to some location so that genomes can be cached between runs: `export SYTYCS_CACHERDIR=$HOME/sytycs_cache`
+- set environment variable SYTYCS_CACHEDIR to some location so that genomes can be cached between runs: `export SYTYCS_CACHEDIR=$HOME/sytycs_cache`
 - a conda env with emboss so we can use primersearch, eg `mamba create -n sytycs emboss mafft fasttree vsearch biopython -c conda-forge libiconv`
 
 ## Usage:
