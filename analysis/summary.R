@@ -34,13 +34,14 @@ dat_pre <- read.csv("sytycs_Enterococcus-AYTGGGYDTAAAGNG-CCGTCAATTYHTTTRAGT/clus
     select(cleanlabel, everything())
 )
 dat <- dat_pre %>% left_join(key) %>% 
-  left_join(key %>% rename(centroid_label=label, centroid_acc=acc, centroid_species=species) %>% select(centroid_label, centroid_acc, centroid_species)) %>% 
+  left_join(key %>% rename(centroid_label=label, centroid_acc=acc, centroid_species=species, centroid_strain=strain) %>% select(centroid_label, centroid_acc, centroid_species, centroid_strain)) %>% 
   group_by(centroid_label) %>% 
   mutate(
     same_accession = acc==centroid_acc,
     centroid_present_in_multiple_accessions=!all(same_accession),
     centroid_present_in_multiple_species=!all(species==centroid_species),
-  )
+  ) %>% 
+  ungroup()
 dat %>%
   group_by(acc, species) %>% 
   summarize(length_diff = max(size) - min(size)) %>%
@@ -48,6 +49,19 @@ dat %>%
   geom_boxplot(outlier.colour = NA) +
   geom_point() + labs("Within-genome ASV length differences")
 
+# make square matrix the lazy way.  I'm sure theres an elegant way out there...
+distmat <- matrix(nrow = nrow(dat), ncol = nrow(dat), dimnames = list(dat$label,dat$label), data = 1)
+for (i in 1:nrow(dat)){
+  a = dat$label[i]
+  b = dat$centroid_label[i]
+  if(b != "*"){
+    # populate above and below diagonals
+    distmat[a, b] = 0
+    distmat[b, a] = 0
+}
+}
+
+distmat = as.dist(distmat)
 tbl_summary(dat %>% group_by(species, acc) %>% 
               summarize(`N 16S`=n()) %>% select(-acc) %>% 
               select(species, `N 16S`), by=`N 16S`) 
@@ -66,14 +80,32 @@ tbl_summary(dat %>% group_by(species, acc) %>%
 ))
 nrow(dat)
 nrow(dat %>% filter(centroid_label != "*"))
+species_ambiguity <- dat %>%
+  mutate(species= ifelse(endsWith(suffix = "_sp.", species), strain, species)) %>% 
+  mutate(centroid_species= ifelse(endsWith(suffix = "_sp.",  centroid_species), centroid_strain, centroid_species)) %>% 
+  filter(centroid_label != "*") %>% select(species, centroid_species ) %>% distinct() %>% filter(species != centroid_species) 
+plot(igraph::graph_from_data_frame(species_ambiguity, directed = FALSE))
+
+species_ambiguity %>% mutate(tmp=label, label=centroid_label, centroid_label=tmp) %>% select(-tmp)
 
 tre <- treeio::read.newick("sytycs_Enterococcus-AYTGGGYDTAAAGNG-CCGTCAATTYHTTTRAGT/alignment/amplicons.mafft.aln.nwk")
-tre$tip.label <- gsub("(.*?)--.*", "\\1", tre$tip.label)
+tre$tip.label <- gsub("-RC", "", gsub("(.*?)--.*", "\\1", tre$tip.label))
 
 library(ggtree)
+enterococcus_cols <-  c(
+  "avium"="#8DD3C7", casseliflavus="yellow", cecorum="#BEBADA",dispar= "#FB8072",durans="#80B1D3",faecalis= "#FF7F00", 
+  faecium="forestgreen", gallinarum="firebrick",gilvus= "blue",hirae= "#BC80BD",innesii= "#CCEBC5",lactis= "#FFED6F", 
+  montenedrensis="#A6CEE3", mundtii="#1F78B4",raffinosus= "#B2DF8A",saigonensis= "purple","sp."= "#FB9A99",thailandicus= "#6A3D9A", 
+  "#FDBF6F", "#FF7F00", "#CAB2D6", "#6A3D9A", "#FFFF99", "#B15928"
+)
+names(enterococcus_cols) <- paste0("Enterococcus_", names(enterococcus_cols))
+enterococcus_shapes=1:19
+names(enterococcus_shapes) <- names(enterococcus_cols)[1:19]
+
 ggtree::ggtree(tre) %<+% (key %>% select(-label)) +
   ggtree::geom_tiplab(size=2, aes(color=species), hjust = -.1) + 
-  ggtree::geom_tippoint(size=4, aes(color=species)) + 
-  scale_color_manual(values = c(RColorBrewer::brewer.pal(n = 12, name = "Set3") , RColorBrewer::brewer.pal(n = 12, name = "Paired")))
+  ggtree::geom_tippoint(size=2, aes(shape=species, color=species)) + 
+  scale_color_manual(values =enterococcus_cols) + 
+  scale_shape_manual(values=enterococcus_shapes)
 
-ggplot2::ggsave(width = 30, height = 60, filename = "tmp.pdf", limitsize = FALSE)
+ggplot2::ggsave(width = 15, height = 200, filename = "tmp.pdf", limitsize = FALSE)
