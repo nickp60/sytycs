@@ -10,6 +10,7 @@ fi
 query=$1
 primerf=$2
 primerr=$3
+maxlen=$4
 outdir=sytycs_${query}-$primerf-$primerr/
 mkdir -p $outdir
 mkdir -p $SYTYCS_CACHEDIR
@@ -51,7 +52,7 @@ do
     if [ -s "$infile" ]
     then
 	outfile=${outdir}pcr/$(basename $infile).fasta
-    zcat $infile | seqret -filter -osformat embl >> tmp.embl
+    zcat < $infile | seqret -filter -osformat embl >> tmp.embl
     # awk '{$1=$1;print}' trims whitespace through awk voodoo
     # | sed "s|.* strand at ||g" trims off the match details except for the corrdinate
     # the sed calls trim up the awful format to something tabular
@@ -67,7 +68,7 @@ do
 #    coord_string=$(cat ${outfile}.hits | awk -F "\t" '{if ($6 <= 400) {print}}'  | grep Sequence |  awk 'BEGIN{FS=OFS="\t"} {print $4, $6+$4}'  | sed "s|\t|..|g" | tr -d " " | tr "\n" ",")
 #    extractseq tmp.embl -reg "$coord_string" stdout -separate  > $outfile
 
-    ./primersearch_to_fasta.py $infile  ${outfile}.hits >  ${outfile}
+    ./primersearch_to_fasta.py $infile  ${outfile}.hits $maxlen >  ${outfile}
     rm tmp.embl
     else
 echo "$infile doesn't exist or is empty"

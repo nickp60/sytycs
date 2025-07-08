@@ -1,6 +1,8 @@
 set -xeu
 set -o pipefail
 indir=$1
+addn_fna=$2
+
 
 # from docs
 echo Obtaining Gold reference database for orienting detection
@@ -21,6 +23,10 @@ fi
 
 
 cat $indir/pcr/*.fasta | sed "s| |--|g" > $indir/cluster_input.fasta
+if [[ ! -z "$addn_fna" ]]; then
+cat $addn_fna  | sed "s| |--|g" | sed "s|;|--|g" >> $indir/cluster_input.fasta
+  
+fi
 #vsearch --makeudb_usearch ${SYTYCS_CACHEDIR}/gold.fasta --output ${SYTYCS_CACHEDIR}/gold.udb
 #vsearch -orient $indir/cluster_input.fasta -db ${SYTYCS_CACHEDIR}/gold.udb -fastaout $indir/cluster_input.oriented.fasta
 
