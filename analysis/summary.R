@@ -37,7 +37,7 @@ dat_pre <- read.csv(file.path(sytycspath, "clusters.uc"), sep="\t",
     select(cleanlabel, everything())
 )
 dat <- dat_pre %>% left_join(key) %>% 
-  left_join(key %>% select(cluster_id, centroid_label=label, centroid_acc=acc, centroid_species=species, centroid_strain=strain)) %>% 
+  left_join(key %>% select(centroid_label=label, centroid_acc=acc, centroid_species=species, centroid_strain=strain)) %>% 
   group_by(centroid_label) %>% 
   mutate(
     same_accession = acc==centroid_acc,
@@ -48,6 +48,7 @@ dat <- dat_pre %>% left_join(key) %>%
 
 
 write.table(dat, file = file.path(sytycspath, "clean_data.tsv"), sep="\t")
+write.table(key, file = file.path(sytycspath, "key.tsv"), sep="\t")
 (plength <- dat %>%
   group_by(acc, species) %>% 
   summarize(length_diff = max(size) - min(size)) %>%
